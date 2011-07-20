@@ -25,7 +25,7 @@ def test_track_it():
 
 def test_tracker_register():
     with mock.patch.dict(orchestra.tracker.files, {}):
-       tracker = orchestra.tracker.Tracker(mock.sentinel.path)
+       tracker = orchestra.tracker.Tracker(mock.sentinel.path, mock.Mock())
        assert orchestra.tracker.files[mock.sentinel.path] is tracker
 
 def test_build_tracker():
@@ -44,7 +44,7 @@ def test_build_tracker():
         new_node = ast.parse('obj()', mode='eval').body
         print ast.dump(new_node)
 
-        tracker = orchestra.tracker.Tracker('<test>')
+        tracker = orchestra.tracker.Tracker('<test>', mock.Mock())
         node = tracker.build_tracker(old_node, new_node)
         print ast.dump(node)
 

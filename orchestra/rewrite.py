@@ -6,23 +6,27 @@ import copy
 import orchestra.ast_util as ast_util
 from orchestra.tracker import Tracker
 
+def rewrite_path(path):
+    with open(path) as file_:
+        src_tree = ast.parse(file_.read(), path)
+        tracker = Tracker(path, src_tree)
+        mod_tree = ExprTrackingNodeTransformer(tracker).visit(src_tree)
+        ast.fix_missing_locations(mod_tree)
+
+        return compile(mod_tree, path, 'exec')
+
 class CoverageHook(object):
     def __init__(self):
         self.module_code = {}
 
     def find_module(self, name, path=None):
         file_, path, desc = imp.find_module(name, path)
+        file_.close()
         if desc[2] != imp.PY_SOURCE:
             return None
 
-        src_tree = ast.parse(file_.read(), path)
-        tracker = Tracker(path)
-        mod_tree = ExprTrackingNodeTransformer(tracker).visit(src_tree)
-        ast.fix_missing_locations(mod_tree)
+        self.module_code[name] = rewrite_path(path)
 
-        self.module_code[name] = compile(mod_tree, path, 'exec')
-
-        file_.close()
         return self
 
     def load_module(self, name):

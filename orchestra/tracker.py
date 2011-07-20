@@ -10,8 +10,9 @@ nodes = {}
 files = {}
 
 class Tracker(object):
-    def __init__(self, path):
+    def __init__(self, path, tree):
         self.path = path
+        self.tree = tree
         files[path] = self
 
     def build_tracker(self, old_node, new_node):
