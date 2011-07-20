@@ -12,7 +12,7 @@ class Test(object):
         self.a = 2
         self.b = b
     """
-    src_tree = ast.parse(code)
+    src_tree = ast.parse(code.strip())
 
     visiter = orchestra.rewrite.CloneVisitor()
     new_tree = visiter.visit(src_tree)
@@ -30,14 +30,14 @@ class TestExprTrackingNodeTransformer(object):
     def test_inject_import(self):
         tracker = mock.Mock(name='tracker')
         etnf = orchestra.rewrite.ExprTrackingNodeTransformer(tracker)
-        
+
         code = """
 class Test(object):
     def __init__(self, b=None):
         self.a = 2
         self.b = b
         """
-        module = ast.parse(code)
+        module = ast.parse(code.strip())
         new_module = etnf.visit(module)
 
         assert isinstance(new_module.body[0], ast.Import)
@@ -55,7 +55,7 @@ class Test(object):
 def test(a, b, c=dict()):
     pass
 """
-        module = ast.parse(code)
+        module = ast.parse(code.strip())
         new_module = etnf.visit(module)
 
         print ast.dump(module)
@@ -72,7 +72,7 @@ def test(a, b, c=dict()):
 def test(a, b, c=dict()):
     pass
 """
-        module = ast.parse(code)
+        module = ast.parse(code.strip())
         new_module = etnf.visit(module)
 
         print ast.dump(module)
@@ -87,7 +87,7 @@ def test(a, b, c=dict()):
         etnf = orchestra.rewrite.ExprTrackingNodeTransformer(tracker)
 
         code = """a = 1"""
-        module = ast.parse(code)
+        module = ast.parse(code.strip())
         new_module = etnf.visit(module)
 
         print ast.dump(module)
@@ -101,7 +101,7 @@ def test(a, b, c=dict()):
         etnf = orchestra.rewrite.ExprTrackingNodeTransformer(tracker)
 
         code = """a = 1"""
-        module = ast.parse(code)
+        module = ast.parse(code.strip())
         new_module = etnf.visit(module)
 
         print ast.dump(module)
@@ -115,7 +115,7 @@ def test(a, b, c=dict()):
         etnf = orchestra.rewrite.ExprTrackingNodeTransformer(tracker)
 
         code = """1 and 2"""
-        module = ast.parse(code)
+        module = ast.parse(code.strip())
         new_module = etnf.visit(module)
 
         print ast.dump(module)
@@ -134,7 +134,7 @@ if a or b:
 else:
     c = 1
         """
-        module = ast.parse(code)
+        module = ast.parse(code.strip())
         new_module = etnf.visit(module)
 
         print ast.dump(module)
@@ -151,7 +151,7 @@ else:
 while a or b:
     pass
         """
-        module = ast.parse(code)
+        module = ast.parse(code.strip())
         new_module = etnf.visit(module)
 
         print ast.dump(module)
@@ -168,7 +168,7 @@ while a or b:
 for a in b:
     pass
         """
-        module = ast.parse(code)
+        module = ast.parse(code.strip())
         new_module = etnf.visit(module)
 
         print ast.dump(module)
