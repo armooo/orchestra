@@ -1,5 +1,6 @@
 import ast
 import dis
+import contextlib
 
 import mock
 
@@ -9,11 +10,11 @@ def test_track_it():
     node = mock.Mock(name='node')
     node.results = []
     code = compile(ast.parse('obj()', mode='eval'), '<test>', 'eval')
-    
+
     p1 = mock.patch.dict(orchestra.tracker.nodes, {'test': node})
     p2 = mock.patch.dict(orchestra.tracker.code, {'test': code})
 
-    with p1, p2:
+    with contextlib.nested(p1, p2):
         obj = mock.Mock(name='obj')
         obj.return_value = mock.sentinel.obj_return
 
@@ -34,7 +35,7 @@ def test_build_tracker():
     p3 = mock.patch.dict(orchestra.tracker.files, {})
     p4 = mock.patch('orchestra.tracker.id_gen')
 
-    with p1, p2, p3, p4:
+    with contextlib.nested(p1, p2, p3, p4):
         def gen_id():
             while True:
                 yield 1
